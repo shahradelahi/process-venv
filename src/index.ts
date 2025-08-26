@@ -11,6 +11,18 @@ import type {
   UnsanitizedEnv,
 } from './typings';
 
+/**
+ * Creates a new immutable environment configuration instance.
+ *
+ * @template TSchema The type of the schema dictionary used for validation.
+ * @template TExtends The type of the array of extended `SanitizedEnv` instances.
+ * @template TFinalSchema The final combined schema type after extensions and transformations.
+ *
+ * @param {CreateEnvOptions<TSchema, TExtends, TFinalSchema>} options Configuration for loading and validating environment variables, including optional `extends` for composing configurations.
+ * @param {UnsanitizedEnv} [initialEnv] An optional object of environment variables to use instead of loading from `.env` files. If provided, these values take precedence over `.env` file values.
+ * @returns {Readonly<SanitizedEnv<TFinalSchema, TExtends>>} A readonly object containing the validated and sanitized environment variables.
+ * @throws {InvalidEnvironmentError} If validation of environment variables fails.
+ */
 export function createEnv<
   TSchema extends TSchemaFormat = NonNullable<unknown>,
   const TExtends extends TExtendsFormat = [],

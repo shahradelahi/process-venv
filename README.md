@@ -13,7 +13,7 @@ A robust and lightweight TypeScript library for securely loading, validating, an
 - [Features](#-features)
 - [Installation](#-installation)
 - [Usage](#-usage)
-- [API](#-api)
+- [Documentation](#-documentation)
 - [Contributing](#-contributing)
 - [License](#license)
 
@@ -31,12 +31,12 @@ This approach significantly enhances the security and reliability of your applic
 
 ## ✨ Features
 
-- ✅ **Secure Isolation**: Prevents unintended access to sensitive environment variables by third-party dependencies.
-- ✅ **Standard Schema Validation**: Enforces strict schema validation for all environment variables at runtime, allowing you to use any compliant validator (e.g., Zod, Valibot, ArkType).
-- ✅ **Flexible Loading**: Load from `.env` files or directly from an existing object (e.g., from a secret vault).
-- ✅ **Immutability**: Environment variables are immutable after creation.
-- ✅ **Lightweight**: Minimal footprint with zero runtime dependencies beyond `dotenv` (optional) and your chosen Standard Schema compliant validator.
-- ✅ **TypeScript First**: Written entirely in TypeScript with strong type safety.
+- **Secure Isolation**: Prevents unintended access to sensitive environment variables by third-party dependencies.
+- **Standard Schema Validation**: Enforces strict schema validation for all environment variables at runtime, allowing you to use any compliant validator (e.g., Zod, Valibot, ArkType).
+- **Flexible Loading**: Load from `.env` files or directly from an existing object (e.g., from a secret vault).
+- **Immutability**: Environment variables are immutable after creation.
+- **Lightweight**: Minimal footprint with zero runtime dependencies beyond `dotenv` (optional) and your chosen Standard Schema compliant validator.
+- **TypeScript First**: Written entirely in TypeScript with strong type safety.
 
 ## 📦 Installation
 
@@ -133,27 +133,9 @@ console.log('API_KEY from venv:', venv.API_KEY);
 console.log('NODE_ENV from process.env:', process.env.NODE_ENV);
 ```
 
-## 📚 API
+## 📚 Documentation
 
-### `createEnv<TSchema, TExtends, TFinalSchema>(options: CreateEnvOptions<TSchema, TExtends, TFinalSchema>, initialEnv?: UnsanitizedEnv): Readonly<SanitizedEnv<TFinalSchema, TExtends>>`
-
-Creates a new immutable environment configuration instance.
-
-- `options`: Configuration for loading and validating environment variables, including optional `extends` for composing configurations.
-- `initialEnv` (optional): An object of environment variables to use instead of loading from `.env` files. If provided, these values take precedence over `.env` file values.
-
-### Interfaces and Types
-
-- `UnsanitizedEnv`: `Record<string, string | undefined>` - Represents raw environment variables before validation.
-- `CreateEnvOptions<TSchema, TExtends, TFinalSchema>`: Configuration options for the `createEnv` function.
-  - `path?`: `string | string[] | URL` - Specifies the path(s) to the `.env` file(s) to load.
-  - `encoding?`: `string` - Specifies the encoding to use when reading the `.env` file(s).
-  - `quiet?`: `boolean` - Suppresses all output from the underlying `dotenv` package, except for errors.
-  - `schema`: `StandardSchemaDictionary` - The Standard Schema compliant schema for validating environment variables.
-  - `extends?`: `TExtendsFormat` - An array of `SanitizedEnv` instances to extend from.
-  - `shared?`: `(keyof TSanitized)[]` - An array of keys that should be exposed in `process.env`.
-- `SanitizedEnv<TFinalSchema, TExtends>`: The inferred type of the fully validated and parsed environment variables, combined from the schema and extended instances.
-- `InvalidEnvironmentError`: A custom error class thrown when environment validation fails.
+For all configuration options, please see [the API docs](https://www.jsdocs.io/package/process-venv).
 
 ## 🤝 Contributing
 

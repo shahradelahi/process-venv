@@ -43,15 +43,31 @@ type Reduce<TArr extends Record<string, unknown>[], TAcc = object> = TArr extend
       : never
     : never;
 
+/**
+ * Represents the default combined schema type, inferring output from the provided schema.
+ * @template TSchema The schema format being used.
+ */
 export type DefaultCombinedSchema<TSchema extends TSchemaFormat> = StandardSchemaV1<
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   {},
   UndefinedOptional<StandardSchemaDictionary.InferOutput<TSchema>>
 >;
 
+/**
+ * Defines the expected format for a schema, which is a dictionary of StandardSchemaV1 instances.
+ */
 export type TSchemaFormat = StandardSchemaDictionary;
+
+/**
+ * Defines the expected format for an array of extended `SanitizedEnv` instances.
+ */
 export type TExtendsFormat = Array<SanitizedEnv<any, any>>;
 
+/**
+ * Options for creating a schema, allowing for custom final schema creation.
+ * @template TSchema The schema dictionary type.
+ * @template TFinalSchema The final combined schema type.
+ */
 export interface CreateSchemaOptions<
   TSchema extends StandardSchemaDictionary,
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -73,8 +89,7 @@ export interface CreateEnvOptions<
 > extends CreateSchemaOptions<TSchema, TFinalSchema> {
   /**
    * Specifies the path(s) to the `.env` file(s) to load. This option is only used
-   * when creating a `SanitizedEnv` instance directly (not via `SanitizedEnv.fromObject`).
-   * Can be a single path string, an array of paths, or a URL.
+   * when `initialEnv` is not provided. Can be a single path string, an array of paths, or a URL.
    *
    * @default `path.resolve(process.cwd(), '.env')`
    * @example
@@ -109,6 +124,9 @@ export interface CreateEnvOptions<
    */
   quiet?: boolean;
 
+  /**
+   * The Standard Schema compliant schema for validating environment variables.
+   */
   schema: TSchema;
 
   /**
@@ -137,13 +155,25 @@ export interface CreateEnvOptions<
    */
   shared?: (keyof TSanitized)[];
 
+  /**
+   * Optional initial environment variables. If provided, these values take precedence
+   * over values loaded from `.env` files.
+   */
   initial?: TSanitized;
 }
 
+/**
+ * Represents the fully validated and parsed environment variables, combined from the schema and extended instances.
+ * @template TFinalSchema The final combined schema type.
+ * @template TExtends The type of the array of extended `SanitizedEnv` instances.
+ */
 export type SanitizedEnv<
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   TFinalSchema extends StandardSchemaV1<{}, {}>,
   TExtends extends TExtendsFormat,
 > = Simplify<Reduce<[StandardSchemaV1.InferOutput<TFinalSchema>, ...TExtends]>>;
 
+/**
+ * Represents raw environment variables before validation.
+ */
 export type UnsanitizedEnv = Record<string, string | undefined>;
