@@ -82,7 +82,9 @@ describe('createEnv', () => {
     // @ts-expect-error - Testing access to a non-existent property
     expect(() => venv.NON_EXISTENT_VAR).toThrow(InvalidEnvironmentError);
     // @ts-expect-error - Testing access to a non-existent property
-    expect(() => venv.NON_EXISTENT_VAR).toThrow('Attempted to access an invalid environment variable: "NON_EXISTENT_VAR". This variable is not defined in your schema.');
+    expect(() => venv.NON_EXISTENT_VAR).toThrow(
+      'Attempted to access an invalid environment variable: "NON_EXISTENT_VAR". This variable is not defined in your schema.'
+    );
   });
 
   test('should throw InvalidEnvironmentError when attempting to set a variable', () => {
@@ -103,7 +105,9 @@ describe('createEnv', () => {
     // @ts-expect-error - Testing immutability
     expect(() => (venv.API_KEY = 'new-key')).toThrow(InvalidEnvironmentError);
     // @ts-expect-error - Testing immutability
-    expect(() => (venv.API_KEY = 'new-key')).toThrow('Attempted to set environment variable: "API_KEY". Environment variables are immutable.');
+    expect(() => (venv.API_KEY = 'new-key')).toThrow(
+      'Attempted to set environment variable: "API_KEY". Environment variables are immutable.'
+    );
   });
 
   test('should throw InvalidEnvironmentError when attempting to delete a variable', () => {
@@ -124,7 +128,9 @@ describe('createEnv', () => {
     // @ts-expect-error - Testing immutability
     expect(() => delete venv.API_KEY).toThrow(InvalidEnvironmentError);
     // @ts-expect-error - Testing immutability
-    expect(() => delete venv.API_KEY).toThrow('Attempted to delete environment variable: "API_KEY". Environment variables are immutable.');
+    expect(() => delete venv.API_KEY).toThrow(
+      'Attempted to delete environment variable: "API_KEY". Environment variables are immutable.'
+    );
   });
 
   test('should throw InvalidEnvironmentError for missing required variables', () => {

@@ -79,15 +79,21 @@ export function createEnv<
   return new Proxy(env, {
     get(target, prop, receiver) {
       if (typeof prop === 'string' && !(prop in target)) {
-        throw new InvalidEnvironmentError(`Attempted to access an invalid environment variable: "${prop.toString()}". This variable is not defined in your schema.`);
+        throw new InvalidEnvironmentError(
+          `Attempted to access an invalid environment variable: "${prop.toString()}". This variable is not defined in your schema.`
+        );
       }
       return Reflect.get(target, prop, receiver);
     },
     set(_target, prop) {
-      throw new InvalidEnvironmentError(`Attempted to set environment variable: "${prop.toString()}". Environment variables are immutable.`);
+      throw new InvalidEnvironmentError(
+        `Attempted to set environment variable: "${prop.toString()}". Environment variables are immutable.`
+      );
     },
     deleteProperty(_target, prop) {
-      throw new InvalidEnvironmentError(`Attempted to delete environment variable: "${prop.toString()}". Environment variables are immutable.`);
+      throw new InvalidEnvironmentError(
+        `Attempted to delete environment variable: "${prop.toString()}". Environment variables are immutable.`
+      );
     },
   }) as Readonly<SanitizedEnv<TFinalSchema, TExtends>>;
 }
