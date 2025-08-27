@@ -102,10 +102,10 @@ describe('createEnv', () => {
       initialEnv
     );
 
-    // @ts-expect-error - Testing immutability
-    expect(() => (venv.API_KEY = 'new-key')).toThrow(InvalidEnvironmentError);
-    // @ts-expect-error - Testing immutability
-    expect(() => (venv.API_KEY = 'new-key')).toThrow(
+    // @ts-expect-error Attempt to assign to const or readonly variable
+    expect(() => (venv['API_KEY'] = 'new-key')).toThrow(InvalidEnvironmentError);
+    // @ts-expect-error Attempt to assign to const or readonly variable
+    expect(() => (venv['API_KEY'] = 'new-key')).toThrow(
       'Attempted to set environment variable: "API_KEY". Environment variables are immutable.'
     );
   });
@@ -125,10 +125,10 @@ describe('createEnv', () => {
       initialEnv
     );
 
-    // @ts-expect-error - Testing immutability
-    expect(() => delete venv.API_KEY).toThrow(InvalidEnvironmentError);
-    // @ts-expect-error - Testing immutability
-    expect(() => delete venv.API_KEY).toThrow(
+    // @ts-expect-error Attempt to assign to const or readonly variable
+    expect(() => delete venv['API_KEY']).toThrow(InvalidEnvironmentError);
+    // @ts-expect-error Attempt to assign to const or readonly variable
+    expect(() => delete venv['API_KEY']).toThrow(
       'Attempted to delete environment variable: "API_KEY". Environment variables are immutable.'
     );
   });
