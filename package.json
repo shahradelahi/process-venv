@@ -1,6 +1,6 @@
 {
   "name": "process-venv",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A robust and lightweight TypeScript library for securely loading, validating, and managing environment variables.",
   "keywords": [
     "environment-variables",
