@@ -28,7 +28,10 @@ export function createEnv<
   const TExtends extends TExtendsFormat = [],
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   TFinalSchema extends StandardSchemaV1<{}, {}> = DefaultCombinedSchema<TSchema>,
->(options: CreateEnvOptions<TSchema, TExtends, TFinalSchema>, initialEnv?: UnsanitizedEnv) {
+>(
+  options: CreateEnvOptions<TSchema, TExtends, TFinalSchema>,
+  initialEnv?: UnsanitizedEnv
+): Readonly<SanitizedEnv<TFinalSchema, TExtends>> {
   // 1. Get current instance's raw environment data (from object or .env)
   let rawEnv: UnsanitizedEnv;
   if (initialEnv) {
@@ -73,7 +76,20 @@ export function createEnv<
     }
   }
 
-  return Object.freeze(env) as Readonly<SanitizedEnv<TFinalSchema, TExtends>>;
+  return new Proxy(env, {
+    get(target, prop, receiver) {
+      if (typeof prop === 'string' && !(prop in target)) {
+        throw new InvalidEnvironmentError(`Attempted to access an invalid environment variable: "${prop.toString()}". This variable is not defined in your schema.`);
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+    set(_target, prop) {
+      throw new InvalidEnvironmentError(`Attempted to set environment variable: "${prop.toString()}". Environment variables are immutable.`);
+    },
+    deleteProperty(_target, prop) {
+      throw new InvalidEnvironmentError(`Attempted to delete environment variable: "${prop.toString()}". Environment variables are immutable.`);
+    },
+  }) as Readonly<SanitizedEnv<TFinalSchema, TExtends>>;
 }
 
 export { InvalidEnvironmentError };

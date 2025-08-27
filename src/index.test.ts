@@ -64,6 +64,69 @@ describe('createEnv', () => {
     expectTypeOf(venv.API_KEY).toEqualTypeOf<string>();
   });
 
+  test('should throw InvalidEnvironmentError when accessing a non-existent variable', () => {
+    const initialEnv: UnsanitizedEnv = {
+      NODE_ENV: 'development',
+      PORT: '8080',
+      API_KEY: 'test-api-key',
+    };
+
+    const venv = createEnv(
+      {
+        schema: { ...baseSchema, ...featureSchema },
+        shared: ['NODE_ENV', 'PORT'],
+      },
+      initialEnv
+    );
+
+    // @ts-expect-error - Testing access to a non-existent property
+    expect(() => venv.NON_EXISTENT_VAR).toThrow(InvalidEnvironmentError);
+    // @ts-expect-error - Testing access to a non-existent property
+    expect(() => venv.NON_EXISTENT_VAR).toThrow('Attempted to access an invalid environment variable: "NON_EXISTENT_VAR". This variable is not defined in your schema.');
+  });
+
+  test('should throw InvalidEnvironmentError when attempting to set a variable', () => {
+    const initialEnv: UnsanitizedEnv = {
+      NODE_ENV: 'development',
+      PORT: '8080',
+      API_KEY: 'test-api-key',
+    };
+
+    const venv = createEnv(
+      {
+        schema: { ...baseSchema, ...featureSchema },
+        shared: ['NODE_ENV', 'PORT'],
+      },
+      initialEnv
+    );
+
+    // @ts-expect-error - Testing immutability
+    expect(() => (venv.API_KEY = 'new-key')).toThrow(InvalidEnvironmentError);
+    // @ts-expect-error - Testing immutability
+    expect(() => (venv.API_KEY = 'new-key')).toThrow('Attempted to set environment variable: "API_KEY". Environment variables are immutable.');
+  });
+
+  test('should throw InvalidEnvironmentError when attempting to delete a variable', () => {
+    const initialEnv: UnsanitizedEnv = {
+      NODE_ENV: 'development',
+      PORT: '8080',
+      API_KEY: 'test-api-key',
+    };
+
+    const venv = createEnv(
+      {
+        schema: { ...baseSchema, ...featureSchema },
+        shared: ['NODE_ENV', 'PORT'],
+      },
+      initialEnv
+    );
+
+    // @ts-expect-error - Testing immutability
+    expect(() => delete venv.API_KEY).toThrow(InvalidEnvironmentError);
+    // @ts-expect-error - Testing immutability
+    expect(() => delete venv.API_KEY).toThrow('Attempted to delete environment variable: "API_KEY". Environment variables are immutable.');
+  });
+
   test('should throw InvalidEnvironmentError for missing required variables', () => {
     const initialEnv: UnsanitizedEnv = {
       NODE_ENV: 'development',
