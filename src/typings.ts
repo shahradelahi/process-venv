@@ -113,18 +113,6 @@ export interface CreateEnvOptions<
   encoding?: string;
 
   /**
-   * Suppresses all output from the underlying `dotenv` package, except for errors.
-   * This option is only relevant when loading from `.env` files.
-   *
-   * @default `false`
-   * @example
-   * ```typescript
-   * createEnv({ quiet: true, schema: mySchema, shared: [] });
-   * ```
-   */
-  quiet?: boolean;
-
-  /**
    * The Standard Schema compliant schema for validating environment variables.
    */
   schema: TSchema;

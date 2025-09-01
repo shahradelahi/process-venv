@@ -40,7 +40,7 @@ export function createEnv<
     const output = config({
       path: options.path,
       encoding: options.encoding,
-      debug: options.quiet ? false : undefined,
+      debug: false,
       processEnv: {},
     });
     rawEnv = output.parsed || {};
