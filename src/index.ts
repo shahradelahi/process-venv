@@ -32,19 +32,23 @@ export function createEnv<
   options: CreateEnvOptions<TSchema, TExtends, TFinalSchema>,
   initialEnv?: UnsanitizedEnv
 ): Readonly<SanitizedEnv<TFinalSchema, TExtends>> {
-  // 1. Get current instance's raw environment data (from object or .env)
   let rawEnv: UnsanitizedEnv;
   if (initialEnv) {
     rawEnv = initialEnv;
   } else {
+    rawEnv = { ...process.env };
+
     const output = config({
       path: options.path,
       encoding: options.encoding,
       debug: false,
       quiet: true, // Suppress dotenv advertisements
-      processEnv: {},
+      processEnv: {}, // Keep this to prevent dotenv from modifying global process.env
     });
-    rawEnv = output.parsed || {};
+
+    if (output.parsed) {
+      rawEnv = { ...rawEnv, ...output.parsed };
+    }
   }
 
   const schema = (typeof options.schema === 'object' ? options.schema : {}) as any;
@@ -68,7 +72,6 @@ export function createEnv<
     parsed.value
   );
 
-  // 4. Populate process.env based on current instance's shared keys
   for (const key in env) {
     if ((options.shared as unknown as string[])?.includes(key)) {
       process.env[key] = String(env[key]);
