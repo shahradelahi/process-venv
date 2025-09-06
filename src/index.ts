@@ -41,6 +41,7 @@ export function createEnv<
       path: options.path,
       encoding: options.encoding,
       debug: false,
+      quiet: true, // Suppress dotenv advertisements
       processEnv: {},
     });
     rawEnv = output.parsed || {};

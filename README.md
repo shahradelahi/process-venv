@@ -69,7 +69,6 @@ export const venv = createEnv({
   shared: ['NODE_ENV', 'PORT', 'SHARED_SECRET'],
   // Optional dotenv options:
   // path: ['.env.local', '.env'],
-  // quiet: true,
 });
 ```
 
