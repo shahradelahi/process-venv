@@ -5,7 +5,7 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](/LICENSE)
 [![Install Size](https://packagephobia.com/badge?p=process-venv)](https://packagephobia.com/result?p=process-venv)
 
-A robust and lightweight TypeScript library for securely loading, validating, and managing environment variables, preventing unintended access by third-party dependencies.
+_process-venv_ is a lightweight TypeScript library for loading, validating, and managing environment variables with a focus on security. It prevents unintended access by third-party dependencies by isolating your secrets from the global `process.env`.
 
 ---
 
@@ -17,26 +17,29 @@ A robust and lightweight TypeScript library for securely loading, validating, an
 - [Contributing](#-contributing)
 - [License](#license)
 
-## 🤔 Motivation
+## 💡 Motivation
 
-In modern applications, especially those with a large number of dependencies, there's a significant risk of sensitive environment variables (like API keys, database credentials, etc.) being inadvertently accessed or logged by "shady" or compromised third-party packages. The traditional approach of loading all `.env` variables directly into `process.env` exposes your entire configuration to every part of your application's dependency tree.
+In Node.js, `process.env` is global. Any dependency can read any variable you set, which is a major security hole. A malicious nested dependency could steal your API keys without you ever knowing.
 
-`process-venv` addresses this by providing a "virtual environment" for your application's configuration. It ensures that:
+`process-venv` fixes this by creating a sandboxed environment for your variables. It keeps them off `process.env` and in a private container.
 
-1.  **Isolation:** Only explicitly "shared" environment variables are exposed to `process.env`. All other variables are kept in memory within the `createEnv` instance, accessible only through its properties.
-2.  **Validation:** All environment variables are rigorously validated against a [Standard Schema](https://standardschema.dev) compliant schema at application startup, catching missing or malformed configurations early. While the examples use Zod, `process-venv` is designed to work with any Standard Schema compliant validator (e.g., Valibot, ArkType).
-3.  **Immutability:** The environment variables are immutable after creation, enhancing predictability and preventing accidental runtime modifications.
+Here’s what that gives you:
 
-This approach significantly enhances the security and reliability of your application's environment management.
+1.  **Stop Leaks**: Your variables are private by default. You choose exactly which ones to share with `process.env`, so you control what third-party code sees.
+2.  **Fail-Fast Validation**: Validate your variables against a schema when your app starts. No more chasing down bugs caused by a missing `DATABASE_URL` in production. Works with Zod, Valibot, ArkType, or any other [Standard Schema](https://standardschema.dev) validator.
+3.  **Immutable Config**: Once loaded, your environment is locked. No more accidental changes at runtime.
+
+It's a safer, more reliable way to manage your config.
 
 ## ✨ Features
 
-- **Secure Isolation**: Prevents unintended access to sensitive environment variables by third-party dependencies.
-- **Standard Schema Validation**: Enforces strict schema validation for all environment variables at runtime, allowing you to use any compliant validator (e.g., Zod, Valibot, ArkType).
-- **Flexible Loading**: Load from `.env` files or directly from an existing object (e.g., from a secret vault).
-- **Immutability**: Environment variables are immutable after creation.
-- **Lightweight**: Minimal footprint with zero runtime dependencies beyond `dotenv` (optional) and your chosen Standard Schema compliant validator.
-- **TypeScript First**: Written entirely in TypeScript with strong type safety.
+- **Secure by Default**: Isolates environment variables from `process.env` to prevent leaks.
+- **Runtime Schema Validation**: Use Zod, Valibot, ArkType, or any [Standard Schema](https://standardschema.dev) validator to catch errors early.
+- **Controlled Exposure**: Explicitly share only the variables you want exposed to `process.env`.
+- **Immutable Config**: Your environment is read-only after initialization.
+- **Load from Anywhere**: Use `.env` files or any plain JavaScript object.
+- **Fully Type-Safe**: Get full autocompletion and type safety for your variables.
+- **Zero Dependencies**: Lightweight, with no runtime dependencies besides your chosen validator.
 
 ## 📦 Installation
 
@@ -98,7 +101,7 @@ Similarly, for loading from an external object, you can define and initialize yo
 // -- src/env.ts
 
 import { createEnv } from 'process-venv';
-import { z } from 'zod';
+import * as z from 'zod';
 
 const myExternalConfig = {
   NODE_ENV: 'production',
