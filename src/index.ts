@@ -10,6 +10,7 @@ import type {
   TSchemaFormat,
   UnsanitizedEnv,
 } from './typings';
+import { removeUndefined } from './utils';
 
 /**
  * Creates a new immutable environment configuration instance.
@@ -32,23 +33,18 @@ export function createEnv<
   options: CreateEnvOptions<TSchema, TExtends, TFinalSchema>,
   initialEnv?: UnsanitizedEnv
 ): Readonly<SanitizedEnv<TFinalSchema, TExtends>> {
-  let rawEnv: UnsanitizedEnv;
-  if (initialEnv) {
-    rawEnv = initialEnv;
-  } else {
-    rawEnv = { ...process.env };
+  let rawEnv = removeUndefined({ ...process.env, ...initialEnv });
 
-    const output = config({
-      path: options.path,
-      encoding: options.encoding,
-      debug: false,
-      quiet: true, // Suppress dotenv advertisements
-      processEnv: {}, // Keep this to prevent dotenv from modifying global process.env
-    });
+  const output = config({
+    path: options.path,
+    encoding: options.encoding,
+    debug: false,
+    quiet: true, // Suppress dotenv advertisements
+    processEnv: {}, // Keep this to prevent dotenv from modifying global process.env
+  });
 
-    if (output.parsed) {
-      rawEnv = { ...rawEnv, ...output.parsed };
-    }
+  if (output.parsed) {
+    rawEnv = { ...rawEnv, ...removeUndefined(output.parsed) };
   }
 
   const schema = (typeof options.schema === 'object' ? options.schema : {}) as any;
@@ -66,9 +62,7 @@ export function createEnv<
   }
 
   const env = Object.assign(
-    (options.extends ?? []).reduce((acc, curr) => {
-      return Object.assign(acc, curr);
-    }, {}),
+    (options.extends ?? []).reduce((acc, curr) => Object.assign(acc, curr), {}),
     parsed.value
   );
 
