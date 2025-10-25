@@ -243,4 +243,63 @@ describe('createEnv', () => {
     expectTypeOf(venv.PORT).toEqualTypeOf<number>();
     expectTypeOf(venv.API_KEY).toEqualTypeOf<string>();
   });
+
+  test('should not clean process.env when clean is false', () => {
+    process.env['API_KEY'] = 'persistent-key';
+    const initialEnv: UnsanitizedEnv = {
+      NODE_ENV: 'development',
+      API_KEY: 'test-api-key',
+    };
+
+    const venv = createEnv(
+      {
+        schema: { ...baseSchema, ...featureSchema },
+        shared: ['NODE_ENV'],
+        clean: false,
+      },
+      initialEnv
+    );
+
+    expect(venv.API_KEY).toBe('test-api-key');
+    expect(process.env['API_KEY']).toBe('persistent-key');
+  });
+
+  test('should clean process.env when clean is true', () => {
+    process.env['API_KEY'] = 'key-to-be-cleaned';
+    const initialEnv: UnsanitizedEnv = {
+      NODE_ENV: 'development',
+      API_KEY: 'test-api-key',
+    };
+
+    const venv = createEnv(
+      {
+        schema: { ...baseSchema, ...featureSchema },
+        shared: ['NODE_ENV'],
+        clean: true,
+      },
+      initialEnv
+    );
+
+    expect(venv.API_KEY).toBe('test-api-key');
+    expect(process.env['API_KEY']).toBeUndefined();
+  });
+
+  test('should clean process.env by default if clean option is not provided', () => {
+    process.env['API_KEY'] = 'key-to-be-cleaned-by-default';
+    const initialEnv: UnsanitizedEnv = {
+      NODE_ENV: 'development',
+      API_KEY: 'test-api-key',
+    };
+
+    const venv = createEnv(
+      {
+        schema: { ...baseSchema, ...featureSchema },
+        shared: ['NODE_ENV'],
+      },
+      initialEnv
+    );
+
+    expect(venv.API_KEY).toBe('test-api-key');
+    expect(process.env['API_KEY']).toBeUndefined();
+  });
 });
