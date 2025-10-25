@@ -3,6 +3,7 @@
 [![CI](https://github.com/shahradelahi/process-venv/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/shahradelahi/process-venv/actions/workflows/ci.yml)
 [![NPM Version](https://img.shields.io/npm/v/process-venv.svg)](https://www.npmjs.com/package/process-venv)
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](/LICENSE)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/process-venv)
 [![Install Size](https://packagephobia.com/badge?p=process-venv)](https://packagephobia.com/result?p=process-venv)
 
 _process-venv_ is a lightweight TypeScript library for loading, validating, and managing environment variables with a focus on security. It prevents unintended access by third-party dependencies by isolating your secrets from the global `process.env`.
