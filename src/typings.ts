@@ -148,6 +148,15 @@ export interface CreateEnvOptions<
    * over values loaded from `.env` files.
    */
   initial?: TSanitized;
+
+  /**
+   * Determines whether to remove non-shared environment variables from `process.env`.
+   * When set to `false`, `process.env` will not be modified, allowing child processes
+   * like those in `node:cluster` to inherit the full environment.
+   *
+   * @default true
+   */
+  clean?: boolean;
 }
 
 /**

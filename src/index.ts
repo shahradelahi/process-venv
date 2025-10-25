@@ -66,10 +66,12 @@ export function createEnv<
     parsed.value
   );
 
+  const clean = options.clean ?? true;
+
   for (const key in env) {
     if ((options.shared as unknown as string[])?.includes(key)) {
       process.env[key] = String(env[key]);
-    } else {
+    } else if (clean) {
       delete process.env[key];
     }
   }
